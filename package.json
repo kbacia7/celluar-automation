@@ -9,11 +9,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/kbacia7/ushare-client-desktop.git"
+    "url": "https://github.com/kbacia7/celluar-automation"
   },
   "author": "Kamil",
   "license": "ISC",
-  "homepage": "https://github.com/kbacia7/ushare-client-desktop",
+  "homepage": "https://github.com/kbacia7/celluar-automation",
   "dependencies": {
     "jquery": "^3.4.0",
     "pixi.js": "^5.1.0"
