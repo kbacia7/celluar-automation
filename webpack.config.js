@@ -1,6 +1,7 @@
-const path = require("path");
-const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
+const path = require("path")
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const MergeJsonWebpackPlugin = require("merge-jsons-webpack-plugin")
 
 const config = {
    mode: 'development',
@@ -53,8 +54,22 @@ const config = {
    },
    plugins: [
       new HtmlWebpackPlugin({
-         title: 'Basic celluar automation'
-      })
+         template: 'src/index.html'
+      }),
+      new MergeJsonWebpackPlugin({
+         "debug":true,
+         "output": {
+            "groupBy": [
+                {
+                    "pattern": "./src/**/translations/en_US.json", 
+                    "fileName": "./translations/en_US.json" 
+                },
+            ]
+        },
+        "globOptions": {
+            "nosort": true
+        }
+     })
    ]
 };
 
