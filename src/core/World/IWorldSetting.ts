@@ -4,4 +4,7 @@ export interface IWorldSetting {
    worldWidth: number,
    worldHeight: number,
    cellSize: number,
+   mainDiv: string,
+   mapBackgroundColor: number,
+   allCellsColors: number[]
 }

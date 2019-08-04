@@ -6,4 +6,7 @@ export class WorldSetting implements IWorldSetting {
    public worldWidth: number
    public worldHeight: number
    public cellSize: number
+   public mainDiv: string
+   public mapBackgroundColor: number
+   public allCellsColors: number[]
 }

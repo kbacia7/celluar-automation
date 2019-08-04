@@ -16,7 +16,7 @@ export class Draw2D {
    public prepare(worldSettings: IWorldSetting) {
       const cellSize = worldSettings.cellSize
       this._renderer = PIXI.autoDetectRenderer({
-         backgroundColor: 0x000000,
+         backgroundColor: worldSettings.mapBackgroundColor,
          height: worldSettings.worldHeight,
          resolution: window.devicePixelRatio || 1,
          width: worldSettings.worldWidth,
@@ -25,10 +25,10 @@ export class Draw2D {
       for (let x: number = 0; x < worldSettings.worldWidth; x += cellSize) {
          for (let y: number = 0; y < worldSettings.worldHeight; y += cellSize) {
             const sprite = new PIXI.Sprite(PIXI.Texture.WHITE)
-            const position = x + "|" + y
+            const position = `${x}|${y}`
             sprite.width = cellSize
+            sprite.tint = worldSettings.mapBackgroundColor
             sprite.height = cellSize
-            sprite.tint = 0x000000
             sprite.position.x = x
             sprite.position.y = y
             this._renderedSprites[position] = sprite
@@ -36,7 +36,7 @@ export class Draw2D {
             this._container.addChild(sprite)
          }
       }
-      $("body").append(this._renderer.view)
+      $(worldSettings.mainDiv).append(this._renderer.view)
    }
 
    public draw(cells: Cell[]): Promise<boolean> {
