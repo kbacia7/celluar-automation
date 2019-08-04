@@ -2,6 +2,9 @@ import { Cell } from "core/Cell/Cell"
 import { ICellFactory } from "core/CellFactory/ICellFactory"
 import { Color } from "core/Color"
 import { Draw2D } from "core/Draw2D/Draw2D"
+import { IStatisticsData } from "core/Statistics/IStatisticsData"
+import { Statistics } from "core/Statistics/Statistics"
+import { StatisticsData } from "core/Statistics/StatisticsData"
 import { IWorldPosition } from "./IWorldPosition"
 import { IWorldSetting } from "./IWorldSetting"
 import { WorldPosition } from "./WorldPosition"
@@ -11,11 +14,20 @@ export class World {
    private _cellFactories: ICellFactory[]
    private _allCells: { [position: string]: Cell } = {}
    private _draw2d: Draw2D
+   private _statistics: Statistics
+   private _statisticsData: StatisticsData
+   private _cellsByColors: { [color: number]: number } = {}
 
-   constructor(worldSetting: IWorldSetting, cellFactories: ICellFactory[], draw2d: Draw2D) {
+   constructor(worldSetting: IWorldSetting,
+               cellFactories: ICellFactory[],
+               draw2d: Draw2D,
+               statistics: Statistics,
+               statisticsData: IStatisticsData) {
       this._worldSetting = worldSetting
       this._cellFactories = cellFactories
       this._draw2d = draw2d
+      this._statistics = statistics
+      this._statisticsData = statisticsData
    }
 
    public start() {
@@ -23,22 +35,33 @@ export class World {
       const xMax = this._worldSetting.worldWidth / cellSize
       const yMax = this._worldSetting.worldHeight / cellSize
       const startCells = this._worldSetting.initializeCells
-      const availableColors = [Color.BROWN, Color.GRAY, Color.GREEN, Color.ORANGE, Color.PINK]
+      const availableColors = this._worldSetting.allCellsColors
       for (let i: number = 0; i < startCells; i++) {
          const xPos = Math.floor(Math.random() * xMax) + 1
          const yPos = Math.floor(Math.random() * yMax) + 1
          const randomPosition = new WorldPosition(xPos * cellSize, yPos * cellSize)
          const createdCell = this._cellFactories[0].create(randomPosition, availableColors[i])
          this._allCells[randomPosition.toString()] = createdCell
+         this._cellsByColors[availableColors[i]] = 0
       }
       this.step()
    }
 
    public step() {
       setTimeout(() => {
+         const t0 = performance.now()
+         let amount = 0
+         const cellsInColors: { [color: number]: number } = this._cellsByColors
+         for (const color in cellsInColors) {
+            if (cellsInColors.hasOwnProperty(color)) {
+               cellsInColors[color] = 0
+            }
+         }
          for (const cellPosition in this._allCells) {
             if (this._allCells.hasOwnProperty(cellPosition)) {
                const cell = this._allCells[cellPosition]
+               cellsInColors[cell.color]++
+               amount++
                if (!cell.isAlive) {
                   delete this._allCells[cellPosition]
                   continue
@@ -89,6 +112,11 @@ export class World {
                }
             }
          }
+         const t1 = performance.now()
+         this._statisticsData.lastUpdateMs = t1 - t0
+         this._statisticsData.allCells = amount
+         this._statisticsData.amountCellsByColors =  cellsInColors
+         this._statistics.update(this._statisticsData)
          this._draw2d.draw(Object.values(this._allCells)).then(() => {
             this.step()
          })
