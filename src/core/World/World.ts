@@ -5,9 +5,9 @@ import { Draw2D } from "core/Draw2D/Draw2D"
 import { IStatisticsData } from "core/Statistics/IStatisticsData"
 import { Statistics } from "core/Statistics/Statistics"
 import { StatisticsData } from "core/Statistics/StatisticsData"
+import { IWorldPositionFactory } from "core/WorldPositionFactory/IWorldPositionFactory"
 import { IWorldPosition } from "./IWorldPosition"
 import { IWorldSetting } from "./IWorldSetting"
-import { WorldPosition } from "./WorldPosition"
 
 export class World {
    private _worldSetting: IWorldSetting
@@ -16,9 +16,11 @@ export class World {
    private _draw2d: Draw2D
    private _statistics: Statistics
    private _statisticsData: StatisticsData
+   private _worldPositionFactory: IWorldPositionFactory
    private _cellsByColors: { [color: number]: number } = {}
 
    constructor(worldSetting: IWorldSetting,
+               worldPositionFactory: IWorldPositionFactory,
                cellFactories: ICellFactory[],
                draw2d: Draw2D,
                statistics: Statistics,
@@ -27,6 +29,7 @@ export class World {
       this._cellFactories = cellFactories
       this._draw2d = draw2d
       this._statistics = statistics
+      this._worldPositionFactory = worldPositionFactory
       this._statisticsData = statisticsData
    }
 
@@ -39,7 +42,7 @@ export class World {
       for (let i: number = 0; i < startCells; i++) {
          const xPos = Math.floor(Math.random() * xMax) + 1
          const yPos = Math.floor(Math.random() * yMax) + 1
-         const randomPosition = new WorldPosition(xPos * cellSize, yPos * cellSize)
+         const randomPosition = this._worldPositionFactory.create(xPos * cellSize, yPos * cellSize)
          const createdCell = this._cellFactories[0].create(randomPosition, availableColors[i])
          this._allCells[randomPosition.toString()] = createdCell
          this._cellsByColors[availableColors[i]] = 0

@@ -1,11 +1,17 @@
+import { IPromiseFactory } from "core/PromiseFactory/IPromiseFactory"
 import * as fs from "fs"
 import path from "path"
 import { IFileRequest } from "./IFileRequest"
 export class FileSystemRequest implements IFileRequest {
+   private _promiseFactory: IPromiseFactory<string> = null
+
+   constructor(promiseFactory: IPromiseFactory<string>) {
+      this._promiseFactory = promiseFactory
+   }
 
    public loadFileAsync(filePath: string, ignoreFixedPath: boolean = false) {
       filePath = this.preparePath(filePath, ignoreFixedPath)
-      return new Promise((resolve) => {
+      return this._promiseFactory.create((resolve) => {
          fs.readFile(filePath, "utf-8", (err, data) => {
             // TODO: Support errors
             resolve(data)
@@ -20,7 +26,7 @@ export class FileSystemRequest implements IFileRequest {
 
    public scanDirectory(directoryPath: string, ignoreFixedPath: boolean = false) {
       directoryPath = this.preparePath(directoryPath, ignoreFixedPath)
-      const directoryContent: string[] = new Array()
+      const directoryContent: string[] = []
       fs.readdirSync(directoryPath, {
          withFileTypes: true,
       }).forEach((file) => {
