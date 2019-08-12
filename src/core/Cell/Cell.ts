@@ -81,7 +81,11 @@ export class Cell  {
          }
       }
       this._health++
-      return this._worldPositionFactory.create(x, y)
+      try {
+         return this._worldPositionFactory.create(x, y)
+      } catch (e) {
+         return null
+      }
    }
 
    public giveStrength(strength: number) {

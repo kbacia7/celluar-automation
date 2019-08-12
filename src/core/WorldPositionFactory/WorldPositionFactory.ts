@@ -1,3 +1,6 @@
+import {
+   WorldPositionIncorrectCoordsException,
+} from "core/exception/WorldPositionFactory/I18nTranslationsNotLoadedException"
 import { IWorldSetting } from "core/World/IWorldSetting"
 import { WorldPosition } from "core/World/WorldPosition"
 import { IWorldPositionFactory } from "./IWorldPositionFactory"
@@ -9,8 +12,9 @@ export class WorldPositionFactory implements IWorldPositionFactory {
    }
 
    public create(x: number, y: number) {
-      if (x < 0 || y < 0 || x > this._worldSetting.worldWidth || y > this._worldSetting.worldHeight) {
-         return null
+      const worldSetting = this._worldSetting
+      if (x < 0 || y < 0 || x > worldSetting.worldWidth || y > worldSetting.worldHeight) {
+         throw new WorldPositionIncorrectCoordsException()
       }
       return new WorldPosition(x, y)
    }
