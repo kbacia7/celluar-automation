@@ -24,9 +24,6 @@ export class I18nTranslate {
       if (!this.i18nObject || Object.keys(this.i18nObject).length === 0) {
          throw new I18nTranslationsNotLoadedException()
       }
-      if (!this.i18nObject[toLanguage]) {
-         throw new I18nFileNotFoundException()
-      }
       if (!this.i18nObject[toLanguage][label]) {
          throw new I18nLabelNotFoundException()
       }
@@ -35,11 +32,13 @@ export class I18nTranslate {
    }
 
    public loadTranslations(directoryPath: string) {
-      const fr = this.fileRequest
-      const language = this.i18nSettings.toLanguage
-      const obj = JSON.parse(fr.loadFileSync(path.join(directoryPath, "/", language + ".json")))
-      if (!obj) {
-         throw new I18nCantLoadTranslationsException()
+      const fr: IFileRequest = this.fileRequest
+      const language: string = this.i18nSettings.toLanguage
+      let obj = null
+      try {
+         obj = JSON.parse(fr.loadFileSync(path.join(directoryPath, "/", language + ".json")))
+      } catch (e) {
+         throw new I18nFileNotFoundException()
       }
       this.i18nObject[language] = obj
 
