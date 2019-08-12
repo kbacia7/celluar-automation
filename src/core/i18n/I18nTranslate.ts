@@ -1,5 +1,4 @@
 import { FileSystemRequest } from "core/FileRequest/FileSystemRequest"
-import { StringHelper } from "core/StringHelper/StringHelper"
 import { I18nCantLoadTranslationsException } from "exceptions/i18n/I18nCantLoadTranslationsException"
 import { I18nFileNotFoundException } from "exceptions/i18n/I18nFileNotFoundException"
 import { I18nLabelNotFoundException } from "exceptions/i18n/I18nLabelNotFoundException"
