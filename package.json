@@ -16,7 +16,7 @@
   "license": "ISC",
   "homepage": "https://github.com/kbacia7/celluar-automation",
   "dependencies": {
-    "jquery": "^3.4.0",
+    "jquery": "^3.5.0",
     "pixi.js": "^5.1.0"
   },
   "browserslist": [
